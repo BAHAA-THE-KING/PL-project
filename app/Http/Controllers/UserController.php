@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Http\Controllers;
+
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
+class UserController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        try{
+            $information=request()->validate([
+                'name'=>['required','min:1','max:25']
+                ,'phone'=>['required','unique:users,phone','min:7','max:15']
+                ,'password'=>['required','min:1','max:45']
+            ]);
+        }catch(ValidationException $e){
+            return response()->json(['msg'=>$e->getMessage()],401);
+        }
+        $user =User::create($information);
+        $token=$user->createToken('user')->plainTextToken;
+        return response()->json(['msg'=>'Success','token'=>$token],200);
+    }
+    public function login()
+    {
+        //validate the data and make sure that the number exists
+        try{
+            $information=request()->validate([
+                'phone'=>['required','exists:users,phone','min:7','max:15']
+                ,'password'=>['required','min:1','max:45']
+            ]);
+        }catch(ValidationException $e){
+            return response()->json(['msg'=>$e->getMessage()],401);
+        }
+        $user=User::where('phone',$information['phone'])->get()->first();
+        //make sure the pass is ok
+        if(!Hash::check($information['password'],$user->password))
+        return response()->json(['msg'=>'Wrong password'],403);
+        //nice....now generate a token
+        $token = $user->createToken('user')->plainTextToken;
+        $json=[
+            'msg'=>'Success'
+            ,'token'=>$token
+        ];
+        return response()->json($json,200);
+    }
+    public function logout(){
+        //remove user's current token
+        request()->user()->currentAccessToken()->delete();
+        return response(['msg'=>'Loged out successfully']);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
