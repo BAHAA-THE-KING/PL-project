@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 return new class extends Migration
 {
@@ -13,14 +14,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',25);
-            $table->string('phone')->unique();
-            $table->string('password',60);
-            $table->float('money')->default(0.0);
-            $table->string('imageId',24)->default('none');
-            $table->rememberToken();
+        Schema::create('favorites', function (Blueprint $table) {
+            $table->id()->unique()->nullable(false);
+            $table->foreignIdFor(User::class,"user")->nullable(false);
+            //$table->foreignIdFor(Expert::class,"expert")->nullable(false);
+            $table->foreignId("expert")->nullable(false);
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('favorites');
     }
 };
