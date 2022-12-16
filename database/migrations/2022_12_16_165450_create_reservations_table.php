@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\User;
+//use App\Models\Expert;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
-//use App\Models\Expert;
 
 return new class extends Migration
 {
@@ -15,12 +15,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('times', function (Blueprint $table) {
-            $table->id("id")->unique()->nullable(false);
+        Schema::create('reservations', function (Blueprint $table) {
+            $table->id()->unique()->nullable(false);
+            $table->foreignIdFor(User::class,"user")->nullable(false);
             $table->foreignIdFor(User::class,"expert")->nullable(false);
-            $table->string("day",3)->nullable(false);
-            $table->time("start")->nullable(false);
-            $table->time("end")->nullable(false);
+            $table->timestamp("startTime")->nullable(false);
+            
+            $table->integer("rate",false,false)->nullable(false)->default(-1);
             $table->timestamps();
         });
     }
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('times');
+        Schema::dropIfExists('reservations');
     }
 };

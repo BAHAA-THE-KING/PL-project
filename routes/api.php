@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,3 +25,5 @@ Route::post('login',[UserController::class,'login']);
 Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::post('logout',[UserController::class,'logout']);
 });
+Route::post("favorite",[FavoriteController::class,"create"]);
+Route::delete("favorite",[FavoriteController::class,"destroy"]);

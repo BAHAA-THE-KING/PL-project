@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Favorite extends Model
+class Reservation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["user","expert"];
+    protected $fillable = ["user","expert","startTime","endTime","rate"];
     public function user(){
         return $this->belongsTo(User::class);
     }

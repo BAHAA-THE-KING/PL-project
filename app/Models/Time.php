@@ -11,6 +11,6 @@ class time extends Model
 
     protected $fillable = ["expert","day","start","end"];
     public function expert(){
-        return $this->belongsTo(Expert::class);
+        return $this->belongsTo(User::class);
     }
 }
