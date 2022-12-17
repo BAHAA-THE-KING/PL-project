@@ -19,8 +19,8 @@ return new class extends Migration
             $table->id()->unique();
             $table->foreignIdFor(User::class,"user");
             $table->foreignIdFor(Expert::class,"expert");
-            $table->timestamp("startTime");
-            $table->timestamp("endTime");
+            $table->dateTime("startTime");
+            $table->dateTime("endTime");
             $table->integer("rate",false,false)->default(-1);
             $table->timestamps();
         });
