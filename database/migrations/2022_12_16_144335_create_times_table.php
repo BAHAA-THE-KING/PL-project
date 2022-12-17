@@ -15,11 +15,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('times', function (Blueprint $table) {
-            $table->id("id")->unique()->nullable(false);
-            $table->foreignIdFor(Expert::class,"expert")->nullable(false);
-            $table->string("day",3)->nullable(false);
-            $table->time("start")->nullable(false);
-            $table->time("end")->nullable(false);
+            $table->id("id")->unique();
+            $table->foreignIdFor(Expert::class,"expert");
+            $table->string("day",3);
+            $table->time("start");
+            $table->time("end");
             $table->timestamps();
         });
     }

@@ -16,12 +16,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('reservations', function (Blueprint $table) {
-            $table->id()->unique()->nullable(false);
-            $table->foreignIdFor(User::class,"user")->nullable(false);
-            $table->foreignIdFor(Expert::class,"expert")->nullable(false);
-            $table->timestamp("startTime")->nullable(false);
-            $table->timestamp("endTime")->nullable(false);
-            $table->integer("rate",false,false)->nullable(false)->default(-1);
+            $table->id()->unique();
+            $table->foreignIdFor(User::class,"user");
+            $table->foreignIdFor(Expert::class,"expert");
+            $table->timestamp("startTime");
+            $table->timestamp("endTime");
+            $table->integer("rate",false,false)->default(-1);
             $table->timestamps();
         });
     }

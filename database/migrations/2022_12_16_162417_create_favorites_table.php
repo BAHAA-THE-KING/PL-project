@@ -16,9 +16,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('favorites', function (Blueprint $table) {
-            $table->id()->unique()->nullable(false);
-            $table->foreignIdFor(User::class,"user")->nullable(false);
-            $table->foreignIdFor(Expert::class,"expert")->nullable(false);
+            $table->id()->unique();
+            $table->foreignIdFor(User::class,"user");
+            $table->foreignIdFor(Expert::class,"expert");
             $table->timestamps();
         });
     }
