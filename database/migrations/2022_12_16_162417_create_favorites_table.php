@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
-//use App\Models\Expert;
+use App\Models\Expert;
 
 return new class extends Migration
 {
@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('favorites', function (Blueprint $table) {
             $table->id()->unique()->nullable(false);
             $table->foreignIdFor(User::class,"user")->nullable(false);
-            $table->foreignIdFor(User::class,"expert")->nullable(false);
+            $table->foreignIdFor(Expert::class,"expert")->nullable(false);
             $table->timestamps();
         });
     }

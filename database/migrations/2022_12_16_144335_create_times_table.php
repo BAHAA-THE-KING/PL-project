@@ -3,8 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
-//use App\Models\Expert;
+use App\Models\Expert;
 
 return new class extends Migration
 {
@@ -17,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('times', function (Blueprint $table) {
             $table->id("id")->unique()->nullable(false);
-            $table->foreignIdFor(User::class,"expert")->nullable(false);
+            $table->foreignIdFor(Expert::class,"expert")->nullable(false);
             $table->string("day",3)->nullable(false);
             $table->time("start")->nullable(false);
             $table->time("end")->nullable(false);
