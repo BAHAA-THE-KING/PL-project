@@ -87,6 +87,7 @@ class FavoriteController extends Controller
      */
     public function destroy(Favorite $favorite)
     {
+        return "".auth()->user();
         $data = ["user"=>request()->userId,"expert"=>request()->expertId];
         $favorite=Favorite::find($data);
         return response()->json([
