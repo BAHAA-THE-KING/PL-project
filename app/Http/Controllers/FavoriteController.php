@@ -85,6 +85,7 @@ class FavoriteController extends Controller
      */
     public function destroy(Favorite $favorite)
     {
+        
         $data = ["user"=>request()->userId,"expert"=>request()->expertId];
         $favorite=Favorite::find($data);
         return response()->json([
@@ -93,7 +94,7 @@ class FavoriteController extends Controller
     }
     public static function doesUserLike($userId,$expertId)
     {
-        $number=Favorite::where('user',$userId)->where('expert',$expertId)->get()->count();
+        $number=Favorite::where('user_id',$userId)->where('expert_id',$expertId)->get()->count();
         return $number!=0;
     }
 }

@@ -39,7 +39,7 @@ class User extends Authenticatable
         return $this->hasOne(Expert::class);
     }
     public function lovedExperts(){
-        return $this->hasMany(Favorite::class,'expert');
+        return $this->hasMany(Favorite::class,'expert_id');
     }
     public function setPasswordAttribute($password){
         $this->attributes['password']=bcrypt($password);
