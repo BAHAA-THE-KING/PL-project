@@ -14,7 +14,7 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -26,9 +26,10 @@ class FavoriteController extends Controller
     {
         $data = ["user"=>request()->userId,"expert"=>request()->expertId];
         $favorite=Favorite::create($data);
-        return response()->json([
-                                 "message"=>"success"
-                                 ]);
+        return response()
+        ->json([
+            "message"=>"success"
+        ]);
     }
 
     /**
@@ -87,7 +88,12 @@ class FavoriteController extends Controller
         $data = ["user"=>request()->userId,"expert"=>request()->expertId];
         $favorite=Favorite::find($data);
         return response()->json([
-                                 "message"=>"success"
-                                 ]);
+            "message"=>"success"
+        ]);
+    }
+    public static function doesUserLike($userId,$expertId)
+    {
+        $number=Favorite::where('user',$userId)->where('expert',$expertId)->get()->count();
+        return $number!=0;
     }
 }

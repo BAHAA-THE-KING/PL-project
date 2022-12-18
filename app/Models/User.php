@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PhpParser\Node\Expr\FuncCall;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -28,9 +28,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'remember_token'
+        'remember_token',
+        'password',
+        'phone',
+        'money',
+        'created_at',
+        'updated_at'
     ];
-
+    public function expert(){
+        return $this->hasOne(Expert::class);
+    }
+    public function lovedExperts(){
+        return $this->hasMany(Favorite::class,'expert');
+    }
     public function setPasswordAttribute($password){
         $this->attributes['password']=bcrypt($password);
     }

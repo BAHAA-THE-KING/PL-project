@@ -6,7 +6,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\FavoriteController;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -17,7 +19,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     /**
@@ -88,9 +90,34 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $connectedUser=auth()->user();
+        try{
+            $json=User::findOrFail($id);
+            if($connectedUser->id==$json['id']){    
+                $json->makeVisible(['phone','money']);
+            }
+            $json['isExp']=$json->expert!=null;
+            $json['msg']='success';
+            $json['canEdit']=$connectedUser->id==$id;
+            $json['isFav']=$json['canEdit']?false:FavoriteController::doesUserLike($connectedUser->id,$id);
+            $json->makeHidden(['expert']);
+            return response()->json($json);
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                'msg'=>'User not found'
+            ],404);
+        }
     }
 
+    public function getFavoriteList()
+    {
+        $connectedUser=auth()->user();
+        $result= User::whereHas('lovedExperts',fn($query
+        )=>$query->where('user',$connectedUser->id))
+        ->orderBy('created_at')
+        ->paginate(10);
+        return $result;
+    }
     /**
      * Show the form for editing the specified resource.
      *
