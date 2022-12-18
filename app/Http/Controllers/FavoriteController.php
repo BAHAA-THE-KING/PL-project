@@ -24,7 +24,9 @@ class FavoriteController extends Controller
      */
     public function create()
     {
-        $data = ["user"=>request()->userId,"expert"=>request()->expertId];
+        $connectedUser=auth()->user();
+        dd($connectedUser);
+        $data = ["user_id"=>$connectedUser,"expert_id"=>request()["expert_id"]];
         $favorite=Favorite::create($data);
         return response()
         ->json([
