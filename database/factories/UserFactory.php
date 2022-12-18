@@ -19,7 +19,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'phone'=>fake()->phoneNumber(),
+            'phone'=>fake()->unique()->phoneNumber(),
             'money'=>fake()->numberBetween(0,10000),
             'imageId'=>fake()->sentence(1,2),
             'password' =>bcrypt(fake()->sentence(1,2)), // password
