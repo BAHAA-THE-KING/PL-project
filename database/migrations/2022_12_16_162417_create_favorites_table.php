@@ -17,8 +17,8 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id()->unique();
-            $table->foreignIdFor(User::class,"user");
-            $table->foreignIdFor(Expert::class,"expert");
+            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(Expert::class);
             $table->timestamps();
         });
     }
