@@ -16,7 +16,7 @@ class ImageController extends Controller
     }
     static public function storeImage(){
         request()->validate([
-            'image' => 'required|image|mimes:png,jpg,jpeg|max:2048'
+            'image' => 'required|image|mimes:png,jpg,jpeg|max:512'
             ]);
         $imageName = time() . "." . request()->image->extension();
         request()->image->storeAs("images",$imageName);
