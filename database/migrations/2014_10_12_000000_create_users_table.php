@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password',60);
             $table->float('money')->default(100.0);
-            $table->text('imageId')->default('no Image');
+            $table->text('image')->default('no Image');
             $table->rememberToken();
             $table->timestamps();
         });

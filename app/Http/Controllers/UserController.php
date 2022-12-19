@@ -31,10 +31,11 @@ class UserController extends Controller
     {
         try{
             $information=request()->validate([
-                'name'=>['required','min:1','max:25']
-                ,'phone'=>['required','unique:users,phone','min:7','max:15']
-                ,'password'=>['required','min:1','max:45']
+                'name'=>['required','min:1','max:25'],
+                'phone'=>['required','unique:users,phone','min:7','max:15'],
+                'password'=>['required','min:1','max:45']
             ]);
+            $information["image"] = ImageController::storeImage();
         }catch(ValidationException $e){
             return response()->json(['msg'=>$e->getMessage()],401);
         }

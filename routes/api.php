@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,4 +29,5 @@ Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::get('favorite',[UserController::class,'getFavoriteList']);
     Route::delete("favorite",[FavoriteController::class,"destroy"]);
     Route::post("favorite",[FavoriteController::class,"create"]);
+    Route::post("updateImage",[ImageController::class,"handleImage"]);
 });
