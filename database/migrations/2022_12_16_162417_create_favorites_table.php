@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(User::class, "expert_id");
             $table->timestamps();
-            $table->integer("rate")->default(-1);
         });
     }
 

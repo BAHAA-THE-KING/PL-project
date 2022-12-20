@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Expert::class);
             $table->dateTime("startTime");
             $table->dateTime("endTime");
+            $table->integer("rate")->default(-1);
             $table->timestamps();
         });
     }
