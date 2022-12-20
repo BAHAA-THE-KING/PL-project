@@ -19,8 +19,8 @@ class FavoriteFactory extends Factory
     public function definition()
     {
         return [
-            "user_id"=>User::factory(),
-            "expert_id"=>Expert::factory()
+            "user_id" => User::factory(),
+            "expert_id" => Expert::factory()
         ];
     }
 }

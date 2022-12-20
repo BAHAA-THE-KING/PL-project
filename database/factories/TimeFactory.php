@@ -19,10 +19,10 @@ class TimeFactory extends Factory
     {
         $end = fake()->time();
         return [
-            "expert_id"=>Expert::factory(),
-            "day"=>fake()->randomElement(["SAT","SUN","MON","TUE","WED","THI","FRI"]),
-            "start"=>fake()->time("H:i:s",$end),
-            "end"=>$end
+            "expert_id" => Expert::factory(),
+            "day" => fake()->randomElement(["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"]),
+            "start" => fake()->time("H:i:s", $end),
+            "end" => $end
         ];
     }
 }

@@ -17,8 +17,9 @@ class SpecialtyFactory extends Factory
     public function definition()
     {
         return [
-            'specialtyName'=>fake()->randomElement([
-                'medical','professional','adminstrative','domestic','psychological'])
+            'specialtyName' => fake()->randomElement([
+                'medical', 'professional', 'adminstrative', 'domestic', 'psychological'
+            ])
         ];
     }
 }
