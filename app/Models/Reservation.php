@@ -10,6 +10,8 @@ class Reservation extends Model
     use HasFactory;
 
     protected $fillable = ["user_id", "expert_id", "startTime", "endTime", "rate"];
+    public $minReservationTime = 30;
+
     public function user()
     {
         return $this->belongsTo(User::class);
