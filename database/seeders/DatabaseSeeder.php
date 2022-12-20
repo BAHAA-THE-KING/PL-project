@@ -4,13 +4,14 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Time;
+use App\Models\User;
 use App\Models\Expert;
 use App\Models\Favorite;
-use App\Models\Reservation;
 use App\Models\Specialty;
-use App\Models\User;
-use App\Models\Time;
+use App\Models\Reservation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,8 +26,11 @@ class DatabaseSeeder extends Seeder
         // foreach(User::all() as $user){
         //     $user->createToken('user');
         // }
+        DB::table('users')->delete();
+        DB::table('experts')->delete();
+        User::factory(10)->create();
         Specialty::factory(3)->create();
-        Expert::factory()->create();
+        Expert::factory(10)->create();
         Favorite::factory(10)->create();
         Reservation::factory(15)->create();
         Time::factory(15)->create();
