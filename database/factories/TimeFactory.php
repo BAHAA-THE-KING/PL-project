@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Expert;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,11 +18,11 @@ class TimeFactory extends Factory
      */
     public function definition()
     {
-        $end = fake()->time();
+        $end = fake()->time("H:i");
         return [
-            "expert_id" => Expert::factory(),
+            "expert_id" => User::factory(),
             "day" => fake()->randomElement(["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"]),
-            "start" => fake()->time("H:i:s", $end),
+            "start" => fake()->time("H:i", $end),
             "end" => $end
         ];
     }

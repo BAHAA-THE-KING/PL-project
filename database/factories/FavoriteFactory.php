@@ -20,7 +20,7 @@ class FavoriteFactory extends Factory
     {
         return [
             "user_id" => User::factory(),
-            "expert_id" => Expert::factory()
+            "expert_id" => User::factory()
         ];
     }
 }

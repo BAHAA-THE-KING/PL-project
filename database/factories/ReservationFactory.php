@@ -24,7 +24,7 @@ class ReservationFactory extends Factory
             "expert_id" => Expert::factory(),
             "startTime" => fake()->dateTime($endTime),
             "endTime" => $endTime,
-            "rate" => fake()->randomElement([-1, 0, 1, 2, 3, 4, 5])
+            "rate"=>fake()->randomElement([-1,0,1,2,3,4,5])
         ];
     }
 }
