@@ -21,13 +21,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('signup',[UserController::class,'create']);
-Route::post('login',[UserController::class,'login']);
-Route::group(['middleware'=>['auth:sanctum']],function (){
-    Route::post('logout',[UserController::class,'logout']);
-    Route::get('user/{id}',[UserController::class,'show']);
-    Route::get('favorite',[UserController::class,'getFavoriteList']);
-    Route::delete("favorite",[FavoriteController::class,"destroy"]);
-    Route::post("favorite",[FavoriteController::class,"create"]);
-    Route::post("updateImage",[ImageController::class,"handleImage"]);
+Route::post('signup', [UserController::class, 'create']);
+Route::post('login', [UserController::class, 'login']);
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('logout', [UserController::class, 'logout']);
+    Route::get('user/{id}', [UserController::class, 'show']);
+    Route::get('favorite', [UserController::class, 'getFavoriteList']);
+    Route::post("favorite", [FavoriteController::class, "create"]);
+    Route::delete("favorite", [FavoriteController::class, "destroy"]);
+    Route::post("updateImage", [ImageController::class, "handleImage"]);
 });

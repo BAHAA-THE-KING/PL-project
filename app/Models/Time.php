@@ -9,8 +9,9 @@ class time extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["expert_id","day","start","end"];
-    public function expert(){
+    protected $fillable = ["expert_id", "day", "start", "end"];
+    public function expert()
+    {
         return $this->belongsTo(User::class);
     }
 }

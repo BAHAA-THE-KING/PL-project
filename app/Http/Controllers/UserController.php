@@ -19,7 +19,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        
     }
 
     /**
@@ -29,47 +28,48 @@ class UserController extends Controller
      */
     public function create()
     {
-        try{
-            $information=request()->validate([
-                'name'=>['required','min:1','max:25'],
-                'phone'=>['required','unique:users,phone','min:7','max:15'],
-                'password'=>['required','min:1','max:45']
+        try {
+            $information = request()->validate([
+                'name' => ['required', 'min:1', 'max:25'],
+                'phone' => ['required', 'unique:users,phone', 'min:7', 'max:15'],
+                'password' => ['required', 'min:1', 'max:45']
             ]);
-            $information["image"] = ImageController::storeImage();
-        }catch(ValidationException $e){
-            return response()->json(['msg'=>$e->getMessage()],401);
+            $information["image"] = ImageController::storeImage(false);
+            if (!$information["image"])
+                $information["image"] = "none";
+        } catch (ValidationException $e) {
+            return response()->json(['msg' => $e->getMessage()], 401);
         }
-        $user =User::create($information);
-        $token=$user->createToken('user')->plainTextToken;
-        return response()->json(['msg'=>'Success','token'=>$token],200);
+        $user = User::create($information);
+        $token = $user->createToken('user')->plainTextToken;
+        return response()->json(['msg' => 'Success', 'token' => $token], 200);
     }
     public function login()
     {
         //validate the data and make sure that the number exists
-        try{
-            $information=request()->validate([
-                'phone'=>['required','exists:users,phone','min:7','max:15']
-                ,'password'=>['required','min:1','max:45']
+        try {
+            $information = request()->validate([
+                'phone' => ['required', 'exists:users,phone', 'min:7', 'max:15'], 'password' => ['required', 'min:1', 'max:45']
             ]);
-        }catch(ValidationException $e){
-            return response()->json(['msg'=>$e->getMessage()],401);
+        } catch (ValidationException $e) {
+            return response()->json(['msg' => $e->getMessage()], 401);
         }
-        $user=User::where('phone',$information['phone'])->get()->first();
+        $user = User::where('phone', $information['phone'])->get()->first();
         //make sure the pass is ok
-        if(!Hash::check($information['password'],$user->password))
-        return response()->json(['msg'=>'Wrong password'],403);
+        if (!Hash::check($information['password'], $user->password))
+            return response()->json(['msg' => 'Wrong password'], 403);
         //nice....now generate a token
         $token = $user->createToken('user')->plainTextToken;
-        $json=[
-            'msg'=>'Success'
-            ,'token'=>$token
+        $json = [
+            'msg' => 'Success', 'token' => $token
         ];
-        return response()->json($json,200);
+        return response()->json($json, 200);
     }
-    public function logout(){
+    public function logout()
+    {
         //remove user's current token
         request()->user()->currentAccessToken()->delete();
-        return response(['msg'=>'Loged out successfully']);
+        return response(['msg' => 'Loged out successfully']);
     }
 
     /**
@@ -91,32 +91,31 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $connectedUser=auth()->user();
-        try{
-            $json=User::findOrFail($id);
-            if($connectedUser->id==$json['id']){    
-                $json->makeVisible(['phone','money']);
+        $connectedUser = auth()->user();
+        try {
+            $json = User::findOrFail($id);
+            if ($connectedUser->id == $json['id']) {
+                $json->makeVisible(['phone', 'money']);
             }
-            $json['isExp']=$json->expert!=null;
-            $json['msg']='success';
-            $json['canEdit']=$connectedUser->id==$id;
-            $json['isFav']=$json['canEdit']?false:FavoriteController::doesUserLike($connectedUser->id,$id);
+            $json['isExp'] = $json->expert != null;
+            $json['msg'] = 'success';
+            $json['canEdit'] = $connectedUser->id == $id;
+            $json['isFav'] = $json['canEdit'] ? false : FavoriteController::doesUserLike($connectedUser->id, $id);
             $json->makeHidden(['expert']);
             return response()->json($json);
-        }catch(ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->json([
-                'msg'=>'User not found'
-            ],404);
+                'msg' => 'User not found'
+            ], 404);
         }
     }
 
     public function getFavoriteList()
     {
-        $connectedUser=auth()->user();
-        $result= User::whereHas('lovedExperts',fn($query
-        )=>$query->where('user',$connectedUser->id))
-        ->orderBy('created_at')
-        ->paginate(10);
+        $connectedUser = auth()->user();
+        $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))
+            ->orderBy('created_at')
+            ->paginate(10);
         return $result;
     }
     /**

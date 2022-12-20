@@ -36,20 +36,24 @@ class User extends Authenticatable
         'created_at',
         'updated_at'
     ];
-    public function expert(){
+    public function expert()
+    {
         return $this->hasOne(Expert::class);
     }
-    public function lovedExperts(){
-        return $this->hasMany(Favorite::class,'expert_id');
+    public function lovedExperts()
+    {
+        return $this->hasMany(Favorite::class, 'expert_id');
     }
-    public function setPasswordAttribute($password){
-        $this->attributes['password']=bcrypt($password);
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
     }
-    public function scopeFilter ($query,array $data){
-        $query->when($data['phone']??false,fn ($query)
-        =>$query->where('phone',$data['phone']));
+    public function scopeFilter($query, array $data)
+    {
+        $query->when($data['phone'] ?? false, fn ($query)
+        => $query->where('phone', $data['phone']));
 
-        $query->when($data['password']??false,fn ($query)
-        =>$query->where('password',bcrypt($data['password'])));
+        $query->when($data['password'] ?? false, fn ($query)
+        => $query->where('password', bcrypt($data['password'])));
     }
 }

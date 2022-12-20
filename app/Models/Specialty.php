@@ -16,6 +16,6 @@ class Specialty extends Model
     {
         return $this->hasMany(Expert::class);
     }
-    
+
     //Specialty has Foreign key from table "X"
 }

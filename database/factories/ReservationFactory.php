@@ -20,11 +20,11 @@ class ReservationFactory extends Factory
     {
         $endTime = fake()->dateTime();
         return [
-            "user_id"=>User::factory(),
-            "expert_id"=>Expert::factory(),
-            "startTime"=>fake()->dateTime($endTime),
-            "endTime"=>$endTime,
-            "rate"=>fake()->randomElement([-1,0,1,2,3,4,5])
+            "user_id" => User::factory(),
+            "expert_id" => Expert::factory(),
+            "startTime" => fake()->dateTime($endTime),
+            "endTime" => $endTime,
+            "rate" => fake()->randomElement([-1, 0, 1, 2, 3, 4, 5])
         ];
     }
 }

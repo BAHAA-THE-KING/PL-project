@@ -19,15 +19,15 @@ class ExpertFactory extends Factory
     public function definition()
     {
         $specialtyId = Specialty::all()->pluck('id')->toArray();
-        $rateCount = fake()->numberBetween(1,10);
+        $rateCount = fake()->numberBetween(1, 10);
         return [
-            'user_id'=>User::factory(),
-            'specialty_id'=> fake()->randomElement($specialtyId),
-            'price'=>fake()->numberBetween(50,200),
-            'description'=>fake()->sentence(6),
-            'address'=>fake()->address(),
-            'rateSum'=>fake()->numberBetween(0,$rateCount*5),
-            'rateCount'=>$rateCount
+            'user_id' => User::factory(),
+            'specialty_id' => fake()->randomElement($specialtyId),
+            'price' => fake()->numberBetween(50, 200),
+            'description' => fake()->sentence(6),
+            'address' => fake()->address(),
+            'rateSum' => fake()->numberBetween(0, $rateCount * 5),
+            'rateCount' => $rateCount
         ];
     }
 }

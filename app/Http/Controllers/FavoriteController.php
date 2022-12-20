@@ -14,7 +14,6 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        
     }
 
     /**
@@ -24,14 +23,10 @@ class FavoriteController extends Controller
      */
     public function create()
     {
-        $connectedUser=auth()->user();
-        dd($connectedUser);
-        $data = ["user_id"=>$connectedUser,"expert_id"=>request()["expert_id"]];
-        $favorite=Favorite::create($data);
-        return response()
-        ->json([
-            "message"=>"success"
-        ]);
+        $connectedUser = auth()->user();
+        $data = ["user_id" => $connectedUser->id, "expert_id" => request()["expert_id"]];
+        $favorite = Favorite::create($data);
+        return response()->json(["message" => "success"]);
     }
 
     /**
@@ -87,16 +82,16 @@ class FavoriteController extends Controller
      */
     public function destroy(Favorite $favorite)
     {
-        
-        $data = ["user"=>request()->userId,"expert"=>request()->expertId];
-        $favorite=Favorite::find($data);
+
+        $data = ["user" => request()->userId, "expert" => request()->expertId];
+        $favorite = Favorite::find($data);
         return response()->json([
-            "message"=>"success"
+            "message" => "success"
         ]);
     }
-    public static function doesUserLike($userId,$expertId)
+    public static function doesUserLike($userId, $expertId)
     {
-        $number=Favorite::where('user_id',$userId)->where('expert_id',$expertId)->get()->count();
-        return $number!=0;
+        $number = Favorite::where('user_id', $userId)->where('expert_id', $expertId)->get()->count();
+        return $number != 0;
     }
 }

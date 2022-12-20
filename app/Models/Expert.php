@@ -23,14 +23,14 @@ class Expert extends Model
     {
         return $this->hasMany(Time::class);
     }
-    
+
     //Expert has Foreign key from table "Specialteis" and "users"
     public function user()
     {
         return $this->belongsTo(User::class);
     }
     public function specialty()
-    {   
+    {
         return $this->belongsTo(specialty::class);
     }
 }
