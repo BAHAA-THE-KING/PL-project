@@ -25,6 +25,7 @@ Route::post('signup',[UserController::class,'create']);
 Route::post('login',[UserController::class,'login']);
 Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::post('logout',[UserController::class,'logout']);
+    Route::patch('user',[UserController::class,'update']);
     Route::get('user/{id}',[UserController::class,'show']);
     Route::get('favorite',[UserController::class,'getFavoriteList']);
     Route::delete("favorite",[FavoriteController::class,"destroy"]);

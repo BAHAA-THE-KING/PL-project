@@ -35,7 +35,7 @@ class UserController extends Controller
                 'phone'=>['required','unique:users,phone','min:7','max:15'],
                 'password'=>['required','min:1','max:45']
             ]);
-            $information["image"] = ImageController::storeImage();
+           // $information["image"] = ImageController::storeImage();
         }catch(ValidationException $e){
             return response()->json(['msg'=>$e->getMessage()],401);
         }
@@ -137,9 +137,25 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request){
+        try{   
+            $information=$request->validate([
+                'name'=>['min:1','max:25'],
+                'password'=>['min:1','max:45'],
+                'phone'=>'Prohibited',
+                'money'=>'prohibited',
+                'image'=>'prohibited'
+        ]);
+    }catch(ValidationException $e){
+        return response()->json(['msg'=>$e->getMessage()],401);
+    }
+        $connectedUser=auth()->user()->id;
+        $connectedUser=User::find($connectedUser);
+        $connectedUser->update($information);
+        return response()->json([
+            'msg'=>'success',
+            'user'=>$connectedUser
+        ]);
     }
 
     /**
