@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('times', function (Blueprint $table) {
             $table->id("id")->unique();
-            $table->foreignIdFor(Expert::class);
+            $table->foreignIdFor(User::class,"expert_id");
             $table->string("day", 3);
             $table->time("start");
             $table->time("end");
