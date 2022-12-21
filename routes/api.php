@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ExpertController;
+use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\TimeController;
@@ -29,6 +30,8 @@ Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::post('logout',[UserController::class,'logout']);
     Route::patch('user',[UserController::class,'update']);
     Route::patch('expert/{id}',[ExpertController::class,'update']);
+    Route::post('specialty', [SpecialtyController::class, 'create']);
+    Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
     Route::patch('time/{time}',[TimeController::class,'update']);
     Route::get('user/{id}',[UserController::class,'show']);
     Route::get('favorite',[UserController::class,'getFavoriteList']);
