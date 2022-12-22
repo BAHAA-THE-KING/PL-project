@@ -33,9 +33,19 @@ class ExpertController extends Controller
         $information['user_id'] = auth()->user()->id;
 
         //if the passed specialization is null, then make it '' (empty string)
-        if(!isset(request()->specialization))
-            $information['specialization'] = '';
+        if(!isset(request()->specialization)){
+            $information['specialization'] = 'general';
+        }
 
+        //validating that the new specialty doesn't already exist...
+        $alreadyExists = Expert::where('user_id',auth()->user()->id)->
+        where('specialty_id', request()->specialty_id)->
+        where('specialization',$information['specialization'])->first();
+
+        if(isset($alreadyExists)){
+            return response()->json(['msg'=>'you already have this specialty.'],400);
+        }
+        
         //create expert
         Expert::create($information);
 

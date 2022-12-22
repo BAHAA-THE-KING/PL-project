@@ -28,7 +28,7 @@ return new class extends Migration
             $table->text('address')->default('The free city of Rapture');
             $table->integer('rateSum')->default(0);
             $table->integer('rateCount')->default(0);
-            $table->string('specialization',20)->default('');
+            $table->string('specialization',20)->default('general');
             $table->unique(['user_id', 'specialty_id','specialization']);
             $table->timestamps();
         });
