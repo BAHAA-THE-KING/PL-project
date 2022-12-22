@@ -136,24 +136,25 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request){
-        try{   
-            $information=$request->validate([
-                'name'=>['min:1','max:25'],
-                'password'=>['min:1','max:45'],
-                'phone'=>'Prohibited',
-                'money'=>'prohibited',
-                'image'=>'prohibited'
-        ]);
-    }catch(ValidationException $e){
-        return response()->json(['msg'=>$e->getMessage()],401);
-    }
-        $connectedUser=auth()->user()->id;
-        $connectedUser=User::find($connectedUser);
+    public function update(Request $request)
+    {
+        try {
+            $information = $request->validate([
+                'name' => ['min:1', 'max:25'],
+                'password' => ['min:1', 'max:45'],
+                'phone' => 'Prohibited',
+                'money' => 'prohibited',
+                'image' => 'prohibited'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['msg' => $e->getMessage()], 401);
+        }
+        $connectedUser = auth()->user()->id;
+        $connectedUser = User::find($connectedUser);
         $connectedUser->update($information);
         return response()->json([
-            'msg'=>'success',
-            'user'=>$connectedUser
+            'msg' => 'success',
+            'user' => $connectedUser
         ]);
     }
 

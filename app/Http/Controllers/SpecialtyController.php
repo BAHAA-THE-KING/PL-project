@@ -11,16 +11,16 @@ class SpecialtyController extends Controller
     public function create()
     {
         //validate the request
-        try{
+        try {
             $specialty = request()->validate([
                 'specialtyName' => [
-                    'required','unique:specialties', 'min:5', 'max:30']
+                    'required', 'unique:specialties', 'min:5', 'max:30'
+                ]
             ]);
-        }
-        catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json(['msg' => $e->getMessage()], 400);
         }
-        
+
         //create specialty
         Specialty::create($specialty);
 

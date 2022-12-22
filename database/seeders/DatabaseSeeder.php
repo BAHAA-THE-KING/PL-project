@@ -26,9 +26,11 @@ class DatabaseSeeder extends Seeder
         // foreach(User::all() as $user){
         //     $user->createToken('user');
         // }
-        DB::table('users')->delete();
-        DB::table('experts')->delete();
-        User::factory(10)->create();
+
+        // DB::table('users')->delete();
+        // DB::table('experts')->delete();
+
+        User::factory(15)->create();
         Specialty::factory(3)->create();
         Expert::factory(10)->create();
         Favorite::factory(10)->create();

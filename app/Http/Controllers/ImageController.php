@@ -20,7 +20,7 @@ class ImageController extends Controller
     static public function storeImage($isReq)
     {
         try {
-            request()->validate(['image' => 'required']);
+            request()->validate(['aimage' => 'required']);
         } catch (Exception $e) {
             if (!$isReq) return;
             throw $e;
