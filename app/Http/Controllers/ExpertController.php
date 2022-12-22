@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expert;
+use App\Models\Specialty;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Exists;
@@ -11,6 +12,40 @@ use Illuminate\Validation\ValidationException;
 
 class ExpertController extends Controller
 {
+
+    public function create()
+    {
+        //validate request
+        try{
+            $information = request()->validate([
+                'specialty_id' => ['required', 'exists:specialties,id'],
+                'price' => ['required', 'numeric', 'between:1,10000'],
+                'description' => ['min:5','max:300'],
+                'address' => ['min:1', 'max:50'],
+                'specialization' => ['max:20']
+            ]);
+        }
+        catch(ValidationException $e){
+            return response()->json(['msg' => $e->getMessage()],400);
+        }
+
+        //add additional information
+        $information['user_id'] = auth()->user()->id;
+
+        //if the passed specialization is null, then make it '' (empty string)
+        if(!isset(request()->specialization))
+            $information['specialization'] = '';
+
+        //create expert
+        Expert::create($information);
+
+        //success message
+        $specialtyName = Specialty::find($information['specialty_id'])->specialtyName;
+
+        return response()->json([
+            'msg'=>"you became $specialtyName expert successfully"
+        ],200);
+    }
     public function update(Request $request,$expId){
         try{
             $information=$request->validate([

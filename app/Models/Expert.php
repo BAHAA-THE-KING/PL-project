@@ -14,7 +14,8 @@ class Expert extends Model
         'specialty_id',
         'price',
         'description',
-        'address'
+        'address',
+        'specialization'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];

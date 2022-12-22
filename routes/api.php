@@ -29,6 +29,7 @@ Route::post('login',[UserController::class,'login']);
 Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::post('logout',[UserController::class,'logout']);
     Route::patch('user',[UserController::class,'update']);
+    Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}',[ExpertController::class,'update']);
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);

@@ -24,10 +24,12 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->float('price')->default(50);
-            $table->text('description')->default('lorem');
+            $table->text('description')->default('no description');
             $table->text('address')->default('The free city of Rapture');
-            $table->integer('rateSum')->nullable();
-            $table->integer('rateCount')->nullable();
+            $table->integer('rateSum')->default(0);
+            $table->integer('rateCount')->default(0);
+            $table->string('specialization',20)->default('');
+            $table->unique(['user_id', 'specialty_id','specialization']);
             $table->timestamps();
         });
     }
