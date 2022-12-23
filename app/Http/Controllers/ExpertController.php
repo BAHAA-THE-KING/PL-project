@@ -6,8 +6,6 @@ use App\Models\Expert;
 use App\Models\Specialty;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Exists;
-use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 
 class ExpertController extends Controller
@@ -53,6 +51,8 @@ class ExpertController extends Controller
             'msg' => "you became $specialtyName expert successfully"
         ], 200);
     }
+
+
     public function update(Request $request, $expId)
     {
         try {
@@ -77,5 +77,22 @@ class ExpertController extends Controller
             'msg' => 'success',
             'speciality' => $expert
         ]);
+    }
+
+    public function toggleActive($expert_id)
+    {
+        $expertise = Expert::find($expert_id);
+        if(!$expertise){
+            return response()->json(["Expertise with id $expert_id was not found."],404);
+        }
+        if($expertise->user_id != auth()->user()->id){
+            return response()->json(['This is not your Expertise!'],401);
+        }
+
+        $expertise->active = !$expertise->active;
+        $expertise->save();
+
+        $result = $expertise->active ? 'This Specialty is now Active' : 'This Specialty is now Inctive';
+        return response()->json([$result],200);
     }
 }

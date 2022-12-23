@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('rateSum')->default(0);
             $table->integer('rateCount')->default(0);
             $table->string('specialization',20)->default('general');
+            $table->boolean('active')->default(true);
             $table->unique(['user_id', 'specialty_id','specialization']);
             $table->timestamps();
         });
