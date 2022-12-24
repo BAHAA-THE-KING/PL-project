@@ -29,7 +29,6 @@ class SpecialtyController extends Controller
 
     public function getSpecialtiesList()
     {
-        auth();
         $specialties = Specialty::get();
         return $specialties;
     }

@@ -30,9 +30,9 @@ class DatabaseSeeder extends Seeder
         // DB::table('users')->delete();
         // DB::table('experts')->delete();
 
-        User::factory(15)->create();
+        User::factory(2)->create();
         Specialty::factory(3)->create();
-        Expert::factory(10)->create();
+        Expert::factory(5)->create();
         Favorite::factory(10)->create();
         Reservation::factory(15)->create();
         Time::factory(15)->create();

@@ -32,6 +32,7 @@ Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::patch('user',[UserController::class,'update']);
     Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}',[ExpertController::class,'update']);
+    Route::patch('expert/toggle/{id}', [ExpertController::class, 'toggleActive']);
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
     Route::post('time',[TimeController::class,'create']);
