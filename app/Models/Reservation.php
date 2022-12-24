@@ -18,6 +18,6 @@ class Reservation extends Model
     }
     public function expert()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Expert::class);
     }
 }

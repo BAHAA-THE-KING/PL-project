@@ -51,8 +51,8 @@ class TimeController extends Controller
 
         foreach ($odays as $key => $day) {
             $ctime = $cdays->where("day", $day)->first();
+            
             $itimeIndex = array_search($day, array_column($idays, "day"));
-
             $itime = ($itimeIndex !== false) ? $idays[$itimeIndex] : null;
 
             if (isset($itime)) { //input

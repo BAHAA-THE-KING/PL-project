@@ -20,9 +20,9 @@ class ReservationController extends Controller
     {
         $connectedUser = auth()->user();
 
-        $user_id=$connectedUser->id;
+        $user_id = $connectedUser->id;
 
-        $res=Reservation::where("user_id", $user_id)->ORwhere("expert_id",$user_id)->get();
+        $res = Reservation::where("user_id", $user_id)->ORwhere("expert_id", $user_id)->get();
 
         return response()->json($res);
     }
@@ -55,6 +55,9 @@ class ReservationController extends Controller
         $expertise = Expert::find($expert_id);
         $expert = $expertise->user;
         $price = $expertise->price;
+
+        if ($user->money < $price)
+            return response()->json(["message"=>"Insufficient Funds"],403);
 
         $expert->money = $expert->money + $price;
         $user->money = $user->money - $price;
@@ -89,8 +92,8 @@ class ReservationController extends Controller
         $res = Reservation::find($id);
 
         if (!$res)
-            return response()->json(["message"=>"Reservation Not Found"],404);
-        return response()->json(["message"=>"Reservation Found","Reservation"=>$res]);
+            return response()->json(["message" => "Reservation Not Found"], 404);
+        return response()->json(["message" => "Reservation Found", "Reservation" => $res]);
     }
 
     /**
