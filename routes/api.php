@@ -34,7 +34,7 @@ Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::patch('expert/{id}',[ExpertController::class,'update']);
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
-    Route::patch('time',[TimeController::class,'create']);
+    Route::post('time',[TimeController::class,'create']);
     Route::patch('time/{time}',[TimeController::class,'update']);
     Route::get('user/{id}',[UserController::class,'show']);
     Route::get('favorite',[UserController::class,'getFavoriteList']);
