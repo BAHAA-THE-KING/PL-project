@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\FavoriteController;
+use App\Models\Favorite;
+use App\Models\Reservation;
+use App\Models\Specialty;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -20,8 +23,14 @@ class UserController extends Controller
     public function index()
     {
         $user = auth()->user();
-        
-        
+
+        $specs = Specialty::all();
+
+        $favs = Favorite::where("user_id",$user["id"])->take(10)->orderBy("id","desc")->get();
+
+        $res = Reservation::where("user_id",$user["id"])->take(10)->orderBy("id","desc")->get();
+
+        return response()->json(["Specialities"=>$specs,"Favorites"=>$favs,"Reservations"=>$res]);
     }
 
     /**
