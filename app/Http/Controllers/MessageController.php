@@ -23,7 +23,7 @@ class MessageController extends Controller
         if($reservation->user_id !=$connectedUserId 
         && $expertsUserId !=$connectedUserId )
         return response()->json(['msg'=>'you dont belong to this chat'],422);
-        $messages=Message::where('reservation_id',$id)->get();
+        $messages=Message::where('reservation_id',$id)->orderByDesc('created_at')->get();
         foreach ($messages as $message) {
             $message->setAttribute('isMine',$connectedUserId==$message->fromUser);
         }
