@@ -5,6 +5,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SpecialtyController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TimeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -46,4 +47,7 @@ Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::get("reservation",[ReservationController::class,"index"]);
     Route::get("reservation/{id}",[ReservationController::class,"show"]);
     Route::post("reservation",[ReservationController::class,"create"]);
+    Route::post('prepareConnection',[MessageController::class,'prepareConnection']);
+    Route::post("liveMessages",[MessageController::class,"liveMessages"]);
+    Route::get("chat/{id}",[MessageController::class,'getChat']);
 });
