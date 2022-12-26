@@ -22,9 +22,17 @@ class ReservationController extends Controller
 
         $user_id = $connectedUser->id;
 
-        $res = Reservation::where("user_id", $user_id)->ORwhere("expert_id", $user_id)->get();
+        $page = (int)request()->query("page");
 
-        return response()->json($res);
+        $allres=Reservation::where("user_id", $user_id)->ORwhere("expert_id", $user_id);
+
+        $length = $allres->count();
+
+        $res = $allres->offset($page * 20)->take(20)->get();
+
+        $hasNext = ($length > ($page + 1) * 20);
+
+        return response()->json(["Reservations" => $res, "hasNext" => $hasNext]);
     }
 
     /**
@@ -57,7 +65,7 @@ class ReservationController extends Controller
         $price = $expertise->price;
 
         if ($user->money < $price)
-            return response()->json(["message"=>"Insufficient Funds"],403);
+            return response()->json(["message" => "Insufficient Funds"], 403);
 
         $expert->money = $expert->money + $price;
         $user->money = $user->money - $price;
