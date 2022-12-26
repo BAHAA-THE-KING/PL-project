@@ -40,6 +40,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Expert::class);
     }
+    
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
     public function lovedExperts()
     {
         return $this->hasMany(Favorite::class, 'expert_id');

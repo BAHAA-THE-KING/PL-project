@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Expert;
 use App\Models\Time;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,26 +18,7 @@ class TimeController extends Controller
      */
     public function index()
     {
-        $connectedUser = auth()->user();
-
-        try {
-            request()->validate([
-                "expert_id" => ["required", Rule::exists("Experts", "id")],
-                "days" => ["required", "array", "min:1", "max:7"]
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
-        }
-
-        $user_id = $connectedUser->id;
-        $days = request()->days;
-        try {
-            foreach ($days as $key => $value) {
-                
-            }
-        } catch (Exception $e) {
-            
-        }
+        //
     }
 
     /**
@@ -46,7 +28,51 @@ class TimeController extends Controller
      */
     public function create()
     {
-        //
+        $connectedUser = auth()->user();
+
+        if (!Expert::where("user_id", $connectedUser->id)->first())
+            return response()->json(["message" => "You Are Not An Expert"], 403);
+
+        try {
+            request()->validate([
+                "times" => ["required", "array", "min:1", "max:7"],
+                "times.*.day" => ["required", "distinct", Rule::in(["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"])],
+                "times.*.start" => ["required", "date_format:H:i", "between:0,23"],
+                "times.*.end" => ["required", "date_format:H:i", "after:start", "between:0,23"]
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['msg' => $e->getMessage()], 401);
+        }
+
+        $user_id = $connectedUser->id;
+        $idays = request()->times; //i=input
+        $cdays = Time::where("expert_id", $user_id)->get(); //c=current
+        $odays = ["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"];
+
+        foreach ($odays as $key => $day) {
+            $ctime = $cdays->where("day", $day)->first();
+            
+            $itimeIndex = array_search($day, array_column($idays, "day"));
+            $itime = ($itimeIndex !== false) ? $idays[$itimeIndex] : null;
+
+            if (isset($itime)) { //input
+                if (isset($ctime)) { //exists
+                    //Will Edit
+                    $ctime->update(["start" => $itime["start"], "end" => $itime["end"]]);
+                } else { //not exists
+                    //Will Create
+                    Time::create(["expert_id" => $user_id, "day" => $itime["day"], "start" => $itime["start"], "end" => $itime["end"]]);
+                }
+            } else { //no input
+                if (isset($ctime)) { //exists
+                    //Will Delete
+                    $ctime->delete();
+                } else { //not exists
+                    //Do Nothing
+                }
+            }
+        }
+        return response()->json(["message" => "success"]);
     }
 
     /**
