@@ -24,13 +24,13 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        $specs = Specialty::all();
+        $specs = SpecialtyController::getSpecialtiesList();
 
-        $favs = Favorite::where("user_id",$user["id"])->take(10)->orderBy("id","desc")->get();
+        $favs = Favorite::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
-        $res = Reservation::where("user_id",$user["id"])->take(10)->orderBy("id","desc")->get();
+        $res = Reservation::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
-        return response()->json(["Specialities"=>$specs,"Favorites"=>$favs,"Reservations"=>$res]);
+        return response()->json(["Specialities" => $specs, "Favorites" => $favs, "Reservations" => $res]);
     }
 
     /**

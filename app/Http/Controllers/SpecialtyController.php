@@ -27,7 +27,7 @@ class SpecialtyController extends Controller
         return response()->json(['msg' => 'specialty has been added successfuly']);
     }
 
-    public function getSpecialtiesList()
+    static public function getSpecialtiesList()
     {
         $specialties = Specialty::get();
         return $specialties;

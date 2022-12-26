@@ -30,6 +30,8 @@ Route::post('login', [UserController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
 
+    Route::get("home", [UserController::class, "index"]);
+
     Route::get('user/{id}', [UserController::class, 'show']);
     Route::patch('user', [UserController::class, 'update']);
 
@@ -40,19 +42,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
     Route::post('specialty', [SpecialtyController::class, 'create']);
 
-    Route::post('time', [TimeController::class, 'create']);
-    Route::patch('time/{time}', [TimeController::class, 'update']);
+    Route::get("image/{name}", [ImageController::class, "index"]);
+    Route::put("updateImage", [ImageController::class, "handleImage"]);
 
     Route::get('favorite', [UserController::class, 'getFavoriteList']);
     Route::post("favorite", [FavoriteController::class, "create"]);
     Route::delete("favorite", [FavoriteController::class, "destroy"]);
 
-    Route::get("image/{name}", [ImageController::class, "index"]);
-    Route::put("updateImage", [ImageController::class, "handleImage"]);
+    Route::post('time', [TimeController::class, 'create']);
+    Route::patch('time/{time}', [TimeController::class, 'update']);
 
     Route::get("reservation", [ReservationController::class, "index"]);
     Route::get("reservation/{id}", [ReservationController::class, "show"]);
     Route::post("reservation", [ReservationController::class, "create"]);
-
-    Route::get("home",[UserController::class,"index"]);
 });

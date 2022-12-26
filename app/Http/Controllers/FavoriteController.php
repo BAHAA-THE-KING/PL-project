@@ -30,7 +30,7 @@ class FavoriteController extends Controller
 
         try {
             request()->validate([
-                "expert_id" => ["required", Rule::exists("Users", "id")]
+                "expert_id" => ["required", Rule::exists("Experts", "user_id")]
             ]);
         } catch (Exception $e) {
             return response()->json(['msg' => $e->getMessage()], 401);
