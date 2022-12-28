@@ -130,6 +130,7 @@ class FavoriteController extends Controller
 
         return response()->json(["message" => "success"]);
     }
+    
     public static function doesUserLike($userId, $expertId)
     {
         $number = Favorite::where('user_id', $userId)->where('expert_id', $expertId)->get()->count();

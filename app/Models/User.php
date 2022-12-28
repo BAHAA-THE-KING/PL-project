@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
     public function expert()
     {
-        return $this->hasOne(Expert::class);
+        return $this->hasMany(Expert::class);
     }
     
     public function favorite()
