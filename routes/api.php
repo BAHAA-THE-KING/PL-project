@@ -39,9 +39,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}', [ExpertController::class, 'update']);
     Route::patch('expert/toggle/{id}', [ExpertController::class, 'toggleActive']);
-
-    Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
+    
     Route::post('specialty', [SpecialtyController::class, 'create']);
+    Route::get('specialty/{id}', [SpecialtyController::class, 'search']);
+    Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
 
     Route::get("image/{name}", [ImageController::class, "index"]);
     Route::put("updateImage", [ImageController::class, "handleImage"]);
