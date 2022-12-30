@@ -29,9 +29,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('signup', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
-Route::get("asd", function () {
-    dd(Expert::factory()->create()->user_id);
-});
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
 
