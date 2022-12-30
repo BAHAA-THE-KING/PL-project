@@ -40,12 +40,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Expert::class);
     }
-    
+
     public function favorite()
     {
         return $this->hasMany(Favorite::class);
     }
-
+    //Expert is Foreign key in table "times"
+    public function times()
+    {
+        return $this->hasMany(Time::class);
+    }
     public function lovedExperts()
     {
         return $this->hasMany(Favorite::class, 'expert_id');

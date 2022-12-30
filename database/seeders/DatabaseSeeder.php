@@ -11,7 +11,6 @@ use App\Models\Favorite;
 use App\Models\Specialty;
 use App\Models\Reservation;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,7 +30,10 @@ class DatabaseSeeder extends Seeder
         // DB::table('experts')->delete();
 
         User::factory(2)->create();
-        Specialty::factory(3)->create();
+        $specs=['medical', 'professional', 'adminstrative', 'domestic', 'psychological'];
+        foreach ($specs as $spec) {
+            Specialty::factory()->create(["specialtyName"=>$spec]);
+        }
         Expert::factory(5)->create();
         Favorite::factory(10)->create();
         Reservation::factory(15)->create();

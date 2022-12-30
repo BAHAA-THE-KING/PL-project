@@ -8,6 +8,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TimeController;
 use App\Http\Controllers\UserController;
+use App\Models\Expert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('signup', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
+Route::get("asd", function () {
+    dd(Expert::factory()->create()->user_id);
+});
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
 
@@ -39,7 +43,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}', [ExpertController::class, 'update']);
     Route::patch('expert/toggle/{id}', [ExpertController::class, 'toggleActive']);
-    
+
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialty/{id}', [SpecialtyController::class, 'search']);
     Route::get('specialties', [SpecialtyController::class, 'getSpecialtiesList']);
@@ -57,7 +61,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get("reservation", [ReservationController::class, "index"]);
     Route::get("reservation/{id}", [ReservationController::class, "show"]);
     Route::post("reservation", [ReservationController::class, "create"]);
-    Route::post('prepareConnection',[MessageController::class,'prepareConnection']);
-    Route::post("liveMessages",[MessageController::class,"liveMessages"]);
-    Route::get("chat/{id}",[MessageController::class,'getChat']);
+
+    Route::post('prepareConnection', [MessageController::class, 'prepareConnection']);
+    Route::post("liveMessages", [MessageController::class, "liveMessages"]);
+    Route::get("chat/{id}", [MessageController::class, 'getChat']);
 });
