@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Expert;
 use App\Models\Reservation;
 use App\Models\User;
+use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -48,7 +49,7 @@ class ReservationController extends Controller
             request()->validate([
                 "expert_id" => ["required", Rule::exists("Experts", "id")],
                 "startTime" => ["required", "date_format:Y-m-d H:i:s"],
-                "endTime" => ["required", "date_format:Y-m-d H:i:s"]
+                "endTime" => ["required", "date_format:Y-m-d H:i:s","after:startTime"]
             ]);
         } catch (Exception $e) {
             return response()->json(['msg' => $e->getMessage()], 401);
@@ -58,6 +59,8 @@ class ReservationController extends Controller
         $expert_id = request()->expert_id;
         $startTime = request()->startTime;
         $endTime = request()->endTime;
+
+        //dd(DateTime::createFromFormat("Y-m-d H:i:s", $startTime)->diff(DateTime::createFromFormat("Y-m-d H:i:s", $endTime)));
 
         $user = User::find($user_id);
         $expertise = Expert::find($expert_id);

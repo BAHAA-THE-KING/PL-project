@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post("favorite", [FavoriteController::class, "create"]);
     Route::delete("favorite", [FavoriteController::class, "destroy"]);
 
+    Route::get('time/{id}', [TimeController::class, 'index']);
     Route::post('time', [TimeController::class, 'create']);
     Route::patch('time/{time}', [TimeController::class, 'update']);
 
