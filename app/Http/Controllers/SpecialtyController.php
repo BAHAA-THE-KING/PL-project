@@ -40,7 +40,7 @@ class SpecialtyController extends Controller
             ->orWhere('description','like','%'.$word.'%');
         })
         ->join('users','users.id','experts.user_id')
-        ->select('experts.id','user_id','name','specialty_id','price','rateSum','rateCount')
+        ->select('experts.id','user_id','name','image','specialty_id','price','rateSum','rateCount')
         ->orderBy('rateCount','desc')
         ->get();
 
