@@ -110,10 +110,14 @@ class UserController extends Controller
             if ($connectedUser->id == $json['id']) {
                 $json->makeVisible(['phone', 'money']);
             }
-            $json['isExp'] = $json->expert != null;
+            $json['isExp'] = $json->expert->where('active',1)->first() != null;
             $json['msg'] = 'success';
             $json['canEdit'] = $connectedUser->id == $id;
             $json['isFav'] = $json['canEdit'] ? false : FavoriteController::doesUserLike($connectedUser->id, $id);
+            if($json['isExp'] || $json['canEdit']){
+                $json['Expertise'] = $json['canEdit'] ? $json->expert :
+                $json->expert->where('active',1);
+            }
             $json->makeHidden(['expert']);
             return response()->json($json);
         } catch (ModelNotFoundException $e) {

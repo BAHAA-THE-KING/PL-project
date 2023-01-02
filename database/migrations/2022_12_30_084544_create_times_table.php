@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Expert;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,10 @@ return new class extends Migration
     {
         Schema::create('times', function (Blueprint $table) {
             $table->id("id")->unique();
-            $table->foreignIdFor(User::class,"expert_id");
+            $table->unsignedBigInteger("expert_id");
+            $table->foreign("expert_id")->references("user_id")->on("experts")->constrained()
+            ->cascadeOnDelete()
+            ->cascadeOnUpdate();
             $table->string("day", 3);
             $table->time("start");
             $table->time("end");

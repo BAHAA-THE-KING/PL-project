@@ -20,12 +20,6 @@ class Expert extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    //Expert is Foreign key in table "times"
-    public function time()
-    {
-        return $this->hasMany(Time::class);
-    }
-
     //Expert has Foreign key from table "Specialteis" and "users"
     public function user()
     {
