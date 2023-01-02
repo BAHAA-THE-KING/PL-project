@@ -61,7 +61,8 @@ class UserController extends Controller
         //validate the data and make sure that the number exists
         try {
             $information = request()->validate([
-                'phone' => ['required', 'exists:users,phone', 'min:7', 'max:15'], 'password' => ['required', 'min:1', 'max:45']
+                'phone' => ['required', 'exists:users,phone', 'min:7', 'max:15']
+                , 'password' => ['required', 'min:1', 'max:45']
             ]);
         } catch (ValidationException $e) {
             return response()->json(['msg' => $e->getMessage()], 401);
