@@ -90,7 +90,7 @@ class ReservationController extends Controller
             ->orderBy("startTime", "asc")
             ->get()->toArray();
         /**/
-        $time = Time::where("expert_id", $user["id"])->where("day", "MON")->first();
+        $time = Time::where("expert_id", $user["id"])->where("day", Carbon::createFromFormat("d/m/Y",$day)->format("l"))->first();
 
         if ($time == null)
             return response()->json(["message" => "Not Available"]);
