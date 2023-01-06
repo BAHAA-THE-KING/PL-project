@@ -52,7 +52,7 @@ class SpecialtyController extends Controller
         return $query->count() ? $query : response()->json(['msg'=>'no results'],404);
     }
 
-    static public function getSpecialtiesList()
+    static public function index()
     {
         $specialties = Specialty::get();
         return $specialties;
