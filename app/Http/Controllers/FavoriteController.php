@@ -4,21 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Favorite;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class FavoriteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -33,67 +22,45 @@ class FavoriteController extends Controller
                 "expert_id" => ["required", Rule::exists("Experts", "user_id")]
             ]);
         } catch (Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    "userMessage" => $e->getMessage()
+                ],
+                401
+            );
         }
 
         $user_id = $connectedUser->id;
         $expert_id = request()->expert_id;
 
         if ($user_id == $expert_id)
-            return response()->json(["message" => "You Can't Add Yourself To Your Favorite List."], 401);
+            return response()->json(
+                [
+                    "message" => "success",
+                    "userMessage" => "You Can't Add Yourself To Your Favorite List."
+                ],
+                401
+            );
 
         $fav = Favorite::where("user_id", $user_id)->where("expert_id", $expert_id)->first();
         if ($fav)
-            return response()->json(["message" => "Expert Is Already In Your Favorite List."], 401);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Expert Is Already In Your Favorite List."
+                ],
+                401
+            );
 
         Favorite::create(["user_id" => $user_id, "expert_id" => $expert_id]);
 
-        return response()->json(["message" => "success"]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Favorite  $favorite
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Favorite $favorite)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Favorite  $favorite
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Favorite $favorite)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Favorite  $favorite
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Favorite $favorite)
-    {
-        //
+        return response()->json(
+            [
+                "message" => "success"
+            ],
+            200
+        );
     }
 
     /**
@@ -112,25 +79,48 @@ class FavoriteController extends Controller
                 "expert_id" => ["required", Rule::exists("Experts", "user_id")]
             ]);
         } catch (Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         }
 
         $user_id = $connectedUser->id;
         $expert_id = request()->expert_id;
 
         if ($user_id == $expert_id)
-            return response()->json(["message" => "You Can't Remove Yourself From Your Favorite List."], 401);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "You Can't Remove Yourself From Your Favorite List."
+                ],
+                401
+            );
 
         $fav = Favorite::where("user_id", $user_id)->where("expert_id", $expert_id)->first();
 
         if (!$fav)
-            return response()->json(["message" => "The Expert Is Not In Your Favorite List."]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "The Expert Is Not In Your Favorite List."
+                ],
+                401
+            );
 
         $fav->delete();
 
-        return response()->json(["message" => "success"]);
+        return response()->json(
+            [
+                "message" => "success"
+            ],
+            200
+        );
     }
-    
+
     public static function doesUserLike($userId, $expertId)
     {
         $number = Favorite::where('user_id', $userId)->where('expert_id', $expertId)->get()->count();

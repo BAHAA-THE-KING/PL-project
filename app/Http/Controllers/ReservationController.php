@@ -34,7 +34,16 @@ class ReservationController extends Controller
 
         $hasNext = ($length > ($page + 1) * 20);
 
-        return response()->json(["Reservations" => $res, "hasNext" => $hasNext]);
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => [
+                    "Reservations" => $res,
+                    "hasNext" => $hasNext
+                ]
+            ],
+            200
+        );
     }
 
     /**
@@ -53,7 +62,13 @@ class ReservationController extends Controller
                 "endTime" => ["required", "date_format:Y-m-d H:i:s", "after:startTime"]
             ]);
         } catch (Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         }
 
         $user_id = $user->id;
@@ -62,11 +77,23 @@ class ReservationController extends Controller
         $endTime = request()->endTime;
 
         if (Carbon::parse($startTime)->diffInMinutes(Carbon::parse($endTime)) < 30) {
-            return response()->json(["message" => "Too Short"]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Too Short"
+                ],
+                401
+            );
         }
 
         if (Carbon::parse($startTime)->diffInHours(Carbon::parse($endTime)) > 5) {
-            return response()->json(["message" => "Too Long"]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Too Long"
+                ],
+                401
+            );
         }
 
 
@@ -76,24 +103,39 @@ class ReservationController extends Controller
         $day = request()->day;
         $reservations = Reservation::where(
             function ($q) use ($day) {
-                return $q
-                    ->whereDate("startTime", $day . " 00:00:00")
-                    ->orWhereDate("endTime", $day . ' 00:00:00');
+                return response()->json([
+                    "message" => "success",
+                    "data" => $q
+                        ->whereDate("startTime", $day . " 00:00:00")
+                        ->orWhereDate("endTime", $day . ' 00:00:00')
+                ], 200);
             }
         )->where(function ($q) use ($user, $id) {
-            return $q
-                ->where("expert_id", $user["id"])
-                ->orWhere("user_id", $user["id"])
-                ->orWhere("expert_id", $id)
-                ->orWhere("user_id", $id);
+            return response()->json(
+                [
+                    "message" => "success",
+                    "data" => $q
+                        ->where("expert_id", $user["id"])
+                        ->orWhere("user_id", $user["id"])
+                        ->orWhere("expert_id", $id)
+                        ->orWhere("user_id", $id)
+                ],
+                200
+            );
         })
             ->orderBy("startTime", "asc")
             ->get()->toArray();
         /**/
-        $time = Time::where("expert_id", $user["id"])->where("day", Carbon::createFromFormat("d/m/Y",$day)->format("l"))->first();
+        $time = Time::where("expert_id", $user["id"])->where("day", Carbon::createFromFormat("d/m/Y", $day)->format("l"))->first();
 
         if ($time == null)
-            return response()->json(["message" => "Not Available"]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Not Available"
+                ],
+                403
+            );
         $time = $time->toArray();
 
         $avtimes = [];
@@ -113,10 +155,16 @@ class ReservationController extends Controller
             }
 
             $reservations = array_map(function ($elm) {
-                return [
-                    "startTime" => substr($elm["startTime"], 11, 8),
-                    "endTime" => substr($elm["endTime"], 11, 8),
-                ];
+                return response()->json(
+                    [
+                        "message" => "success",
+                        "data" => [
+                            "startTime" => substr($elm["startTime"], 11, 8),
+                            "endTime" => substr($elm["endTime"], 11, 8)
+                        ]
+                    ],
+                    200
+                );
             }, $reservations);
 
             $reservations = collect($reservations)->sortBy("startTime")->reverse()->toArray();
@@ -162,20 +210,26 @@ class ReservationController extends Controller
         /*</From Time Controller>*/
 
         $canRes = false;
-        $tstartTime=substr($startTime,11,8);
-        $tendTime=substr($endTime,11,8);
+        $tstartTime = substr($startTime, 11, 8);
+        $tendTime = substr($endTime, 11, 8);
         foreach ($avtimes as $key => $value) {
             if ((Carbon::parse($tstartTime)->gte(Carbon::parse($value["startTime"]))) &&
                 (Carbon::parse($tendTime)->gte(Carbon::parse($value["startTime"]))) &&
                 (Carbon::parse($tstartTime)->lte(Carbon::parse($value["endTime"]))) &&
                 (Carbon::parse($tendTime)->lte(Carbon::parse($value["endTime"])))
-                ) {
+            ) {
                 $canRes = true;
                 break;
             }
         }
         if (!$canRes) {
-            return response()->json(["message" => "Wrong Time"]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Wrong Time"
+                ],
+                403
+            );
         }
         $user = User::find($user_id);
         $expertise = Expert::find($expert_id);
@@ -183,7 +237,13 @@ class ReservationController extends Controller
         $price = $expertise->price;
 
         if ($user->money < $price)
-            return response()->json(["message" => "Insufficient Funds"], 403);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Insufficient Funds"
+                ],
+                403
+            );
 
         $expert->money = $expert->money + $price;
         $user->money = $user->money - $price;
@@ -192,19 +252,13 @@ class ReservationController extends Controller
 
         Reservation::create(["user_id" => $user_id, "expert_id" => $expert_id, "startTime" => $startTime, "endTime" => $endTime, "rate" => -1]);
 
-        return response()->json(["message" => "created"], 201);
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => "created"
+            ],
+            201
+        );
     }
 
     /**
@@ -218,41 +272,19 @@ class ReservationController extends Controller
         $res = Reservation::find($id);
 
         if (!$res)
-            return response()->json(["message" => "Reservation Not Found"], 404);
-        return response()->json(["message" => "Reservation Found", "Reservation" => $res]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Reservation  $reservation
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reservation $reservation)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Reservation  $reservation
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Reservation $reservation)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Reservation  $reservation
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Reservation $reservation)
-    {
-        //
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Reservation Not Found"
+                ],
+                404
+            );
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $res
+            ],
+            200
+        );
     }
 }

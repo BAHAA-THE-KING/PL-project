@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\FavoriteController;
 use App\Models\Favorite;
 use App\Models\Reservation;
-use App\Models\Specialty;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -24,13 +23,19 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        $specs = SpecialtyController::getSpecialtiesList();
+        $specs = SpecialtyController::index();
 
         $favs = Favorite::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
         $res = Reservation::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
-        return response()->json(["Specialities" => $specs, "Favorites" => $favs, "Reservations" => $res]);
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => ["Specialities" => $specs, "Favorites" => $favs, "Reservations" => $res]
+            ],
+            200
+        );
     }
 
     /**
@@ -50,52 +55,71 @@ class UserController extends Controller
             if (!$information["image"])
                 $information["image"] = "none";
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    "userMessage" => $e->getMessage()
+                ],
+                401
+            );
         }
         $user = User::create($information);
         $token = $user->createToken('user')->plainTextToken;
-        return response()->json(['msg' => 'Success', 'token' => $token], 200);
+        return response()->json(
+            [
+                'message' => 'success',
+                'data' => $token
+            ],
+            200
+        );
     }
     public function login()
     {
         //validate the data and make sure that the number exists
         try {
             $information = request()->validate([
-                'phone' => ['required', 'exists:users,phone', 'min:7', 'max:15']
-                , 'password' => ['required', 'min:1', 'max:45']
+                'phone' => ['required', 'exists:users,phone', 'min:7', 'max:15'], 'password' => ['required', 'min:1', 'max:45']
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         }
         $user = User::where('phone', $information['phone'])->get()->first();
         //make sure the pass is ok
         if (!Hash::check($information['password'], $user->password))
-            return response()->json(['msg' => 'Wrong password'], 403);
+            return response()->json(
+                [
+                    'message' => 'error',
+                    'userMessage' => 'Wrong password'
+                ],
+                403
+            );
         //nice....now generate a token
         $token = $user->createToken('user')->plainTextToken;
-        $json = [
-            'msg' => 'Success', 'token' => $token
-        ];
-        return response()->json($json, 200);
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $token
+            ],
+            200
+        );
     }
     public function logout()
     {
         //remove user's current token
         request()->user()->currentAccessToken()->delete();
-        return response(['msg' => 'Loged out successfully']);
+        return response(
+            [
+                'message' => 'success'
+            ],
+            200
+        );
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
     /**
      * Display the specified resource.
      *
@@ -110,20 +134,30 @@ class UserController extends Controller
             if ($connectedUser->id == $json['id']) {
                 $json->makeVisible(['phone', 'money']);
             }
-            $json['isExp'] = $json->expert->where('active',1)->first() != null;
+            $json['isExp'] = $json->expert->where('active', 1)->first() != null;
             $json['msg'] = 'success';
             $json['canEdit'] = $connectedUser->id == $id;
             $json['isFav'] = $json['canEdit'] ? false : FavoriteController::doesUserLike($connectedUser->id, $id);
-            if($json['isExp'] || $json['canEdit']){
+            if ($json['isExp'] || $json['canEdit']) {
                 $json['Expertise'] = $json['canEdit'] ? $json->expert :
-                $json->expert->where('active',1);
+                    $json->expert->where('active', 1);
             }
             $json->makeHidden(['expert']);
-            return response()->json($json);
+            return response()->json(
+                [
+                    "message" => "success",
+                    "data" => $json
+                ],
+                200
+            );
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'msg' => 'User not found'
-            ], 404);
+            return response()->json(
+                [
+                    'message' => 'error',
+                    'userMessage' => 'User not found'
+                ],
+                404
+            );
         }
     }
 
@@ -133,19 +167,14 @@ class UserController extends Controller
         $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))
             ->orderBy('created_at')
             ->paginate(10);
-        return $result;
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $result
+            ],
+            200
+        );
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -164,25 +193,23 @@ class UserController extends Controller
                 'image' => 'prohibited'
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "success",
+                    'data' => $e->getMessage()
+                ],
+                401
+            );
         }
         $connectedUser = auth()->user()->id;
         $connectedUser = User::find($connectedUser);
         $connectedUser->update($information);
-        return response()->json([
-            'msg' => 'success',
-            'user' => $connectedUser
-        ]);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json(
+            [
+                'message' => 'success',
+                'data' => $connectedUser
+            ],
+            200
+        );
     }
 }
