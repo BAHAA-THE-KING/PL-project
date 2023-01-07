@@ -105,6 +105,7 @@ class UserController extends Controller
     public function show($id)
     {
         $connectedUser = auth()->user();
+        if($id<0)$id=$connectedUser->id;
         try {
             $json = User::findOrFail($id);
             if ($connectedUser->id == $json['id']) {
