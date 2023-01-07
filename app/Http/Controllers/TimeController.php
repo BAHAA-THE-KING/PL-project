@@ -31,22 +31,40 @@ class TimeController extends Controller
         ];
         $validate = Validator::make($requset, $rules);
         if ($validate->fails()) {
-            return response()->json(["message" => $validate->messages()], 401);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => $validate->messages()
+                ],
+                401
+            );
         }
         $id = request()->id;
         $day = request()->day;
         $reservations = Reservation::where(
             function ($q) use ($day) {
-                return $q
-                    ->whereDate("startTime", $day . " 00:00:00")
-                    ->orWhereDate("endTime", $day . ' 00:00:00');
+                return response()->json(
+                    [
+                        "message" => "success",
+                        "data" => $q
+                            ->whereDate("startTime", $day . " 00:00:00")
+                            ->orWhereDate("endTime", $day . ' 00:00:00')
+                    ],
+                    200
+                );
             }
         )->where(function ($q) use ($user, $id) {
-            return $q
-                ->where("expert_id", $user["id"])
-                ->orWhere("user_id", $user["id"])
-                ->orWhere("expert_id", $id)
-                ->orWhere("user_id", $id);
+            return response()->json(
+                [
+                    "message" => "success",
+                    "data" => $q
+                        ->where("expert_id", $user["id"])
+                        ->orWhere("user_id", $user["id"])
+                        ->orWhere("expert_id", $id)
+                        ->orWhere("user_id", $id)
+                ],
+                200
+            );
         })
             ->orderBy("startTime", "asc")
             ->get()->toArray();
@@ -54,15 +72,29 @@ class TimeController extends Controller
         $time = Time::where("expert_id", $user["id"])->where("day", "MON")->first();
 
         if ($time == null)
-            return response()->json(["message" => "Not Available"]);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Not Available"
+                ],
+                403
+            );
         $time = $time->toArray();
         if (sizeof($reservations) == 0)
-            return response()->json(array_values([
+            return response()->json(
                 [
-                    "startTime" => $time["start"],
-                    "endTime" => $time["end"]
-                ]
-            ]));
+                    "message" => "success",
+                    "data" => array_values(
+                        [
+                            [
+                                "startTime" => $time["start"],
+                                "endTime" => $time["end"]
+                            ]
+                        ]
+                    )
+                ],
+                200
+            );
 
         if ($reservations[0]["startTime"] < $day . " 00:00:00") {
             $reservations[0]["startTime"] = $day . " 00:00:00";
@@ -72,10 +104,16 @@ class TimeController extends Controller
         }
 
         $reservations = array_map(function ($elm) {
-            return [
-                "startTime" => substr($elm["startTime"], 11, 8),
-                "endTime" => substr($elm["endTime"], 11, 8),
-            ];
+            return response()->json(
+                [
+                    "message" => "success",
+                    "data" => [
+                        "startTime" => substr($elm["startTime"], 11, 8),
+                        "endTime" => substr($elm["endTime"], 11, 8),
+                    ]
+                ],
+                200
+            );
         }, $reservations);
 
         $reservations = collect($reservations)->sortBy("startTime")->reverse()->toArray();
@@ -138,7 +176,13 @@ class TimeController extends Controller
         //$busytimes = array_values($busytimes);
 
         $res = $avtimes;
-        return response()->json(array_values($res));
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => array_values($res)
+            ],
+            200
+        );
     }
 
     /**
@@ -151,7 +195,13 @@ class TimeController extends Controller
         $connectedUser = auth()->user();
 
         if (!Expert::where("user_id", $connectedUser->id)->first())
-            return response()->json(["message" => "You Are Not An Expert"], 403);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "You Are Not An Expert"
+                ],
+                403
+            );
 
         try {
             request()->validate([
@@ -161,7 +211,13 @@ class TimeController extends Controller
                 "times.*.end" => ["required", "date_format:H:i", "after:start", "between:0,23"]
             ]);
         } catch (Exception $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         }
 
         $user_id = $connectedUser->id;
@@ -192,42 +248,13 @@ class TimeController extends Controller
                 }
             }
         }
-        return response()->json(["message" => "success"]);
+        return response()->json(
+            [
+                "message" => "success"
+            ],
+            200
+        );
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Time  $time
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Time $time)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Time  $time
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Time $time)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -243,29 +270,34 @@ class TimeController extends Controller
                 'end' => 'required|date_format:H:i:s|after:start',
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         }
         if ($time->expert_id != auth()->user()->id) {
-            return response()->json([
-                'msg' => "only account's owner can edit it's information"
-            ], 422);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => "only account's owner can edit it's information"
+                ],
+                422
+            );
         }
         $time->update($information);
         $reponse = [
             'msg' => 'success',
             'time' => $time
         ];
-        return $reponse;
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Time  $time
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Time $time)
-    {
-        //
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $reponse
+            ],
+            200
+        );
     }
 }

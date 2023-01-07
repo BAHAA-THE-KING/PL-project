@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use Illuminate\Support\Env;
 
 class ImageController extends Controller
 {
@@ -24,9 +23,20 @@ class ImageController extends Controller
             $user->image = ImageController::storeImage(true);
             $user->save();
         } catch (Exception $e) {
-            return response()->json(["message" => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => $e->getMessage()
+                ],
+                401
+            );
         }
-        return response()->json(["message" => "success"]);
+        return response()->json(
+            [
+                "message" => "success"
+            ],
+            200
+        );
     }
     static public function storeImage($isReq)
     {

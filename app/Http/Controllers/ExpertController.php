@@ -23,7 +23,13 @@ class ExpertController extends Controller
                 'specialization' => ['max:20']
             ]);
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 400);
+            return response()->json(
+                [
+                    'message' => "error",
+                    "userMessage" => $e->getMessage()
+                ],
+                400
+            );
         }
 
         //add additional information
@@ -38,7 +44,13 @@ class ExpertController extends Controller
         $alreadyExists = Expert::where('user_id', auth()->user()->id)->where('specialty_id', request()->specialty_id)->where('specialization', $information['specialization'])->first();
 
         if (isset($alreadyExists)) {
-            return response()->json(['msg' => 'you already have this specialty.'], 400);
+            return response()->json(
+                [
+                    'message' => "error",
+                    "userMessage" => 'you already have this specialty.'
+                ],
+                400
+            );
         }
 
         //create expert
@@ -47,9 +59,13 @@ class ExpertController extends Controller
         //success message
         $specialtyName = Specialty::find($information['specialty_id'])->specialtyName;
 
-        return response()->json([
-            'msg' => "you became $specialtyName expert successfully"
-        ], 200);
+        return response()->json(
+            [
+                'message' => "success",
+                "data" => "you became $specialtyName expert successfully"
+            ],
+            200
+        );
     }
 
 
@@ -64,35 +80,72 @@ class ExpertController extends Controller
             $userId = auth()->user()->id;
             $expert = Expert::findOrFail($expId);
             if ($userId != $expert->user_id)
-                return response()->json([
-                    'msg' => "only account's owner can edit it's information"
-                ], 422);
+                return response()->json(
+                    [
+                        'message' => "error",
+                        'userMessage' => "only account's owner can edit it's information"
+                    ],
+                    422
+                );
         } catch (ValidationException $e) {
-            return response()->json(['msg' => $e->getMessage()], 401);
+            return response()->json(
+                [
+                    'message' => "error",
+                    'userMessage' => $e->getMessage()
+                ],
+                401
+            );
         } catch (ModelNotFoundException $e) {
-            return response()->json(['msg' => 'speciality not found'], 404);
+            return response()->json(
+                [
+                    'message' => 'error',
+                    'userMessage' => 'speciality not found'
+                ],
+                404
+            );
         }
         $expert->update($information);
-        return response()->json([
-            'msg' => 'success',
-            'speciality' => $expert
-        ]);
+        return response()->json(
+            [
+                'message' => 'success',
+                'data' => $expert
+            ],
+            200
+        );
     }
 
     public function toggleActive($expert_id)
     {
         $expertise = Expert::find($expert_id);
-        if(!$expertise){
-            return response()->json(["Expertise with id $expert_id was not found."],404);
+        if (!$expertise) {
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Expertise with id $expert_id was not found."
+                ],
+                404
+            );
         }
-        if($expertise->user_id != auth()->user()->id){
-            return response()->json(['This is not your Expertise!'],401);
+        if ($expertise->user_id != auth()->user()->id) {
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => 'This is not your Expertise!'
+                ],
+                401
+            );
         }
 
         $expertise->active = !$expertise->active;
         $expertise->save();
 
         $result = $expertise->active ? 'This Specialty is now Active' : 'This Specialty is now Inctive';
-        return response()->json([$result],200);
+        return response()->json(
+            [
+                "message" => "success",
+                "data" => $result
+            ],
+            200
+        );
     }
 }
