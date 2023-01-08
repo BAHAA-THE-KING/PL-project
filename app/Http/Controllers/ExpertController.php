@@ -4,13 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Models\Expert;
 use App\Models\Specialty;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ExpertController extends Controller
 {
+    public function index($id)
+    {
+        //validate request
+        try {
+            User::findOrFail($id);
+        } catch (ValidationException $e) {
+            return response()->json(
+                [
+                    'message' => "error",
+                    "userMessage" => $e->getMessage()
+                ],
+                400
+            );
+        }
+        
+        if ($id === -1)
+            $id = auth()->user()->id;
 
+        $exps = Expert::where('user_id', $id)->get()->all();
+        return response()->json(
+            [
+                'message' => "success",
+                "data" => $exps
+            ],
+            200
+        );
+    }
     public function create()
     {
         //validate request

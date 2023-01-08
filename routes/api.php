@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('signup', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
 
@@ -37,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('user/{id}', [UserController::class, 'show']);
     Route::patch('user', [UserController::class, 'update']);
 
+    Route::get('expert/{id}', [ExpertController::class, 'index']);
     Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}', [ExpertController::class, 'update']);
     Route::patch('expert/toggle/{id}', [ExpertController::class, 'toggleActive']);
