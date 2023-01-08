@@ -38,16 +38,15 @@ class SpecialtyController extends Controller
             200
         );
     }
-
     public function search($id)
     {
-        $word = request()->header('word');
-
-        $query = Expert::where('specialty_id', $id)
-            ->where(function ($query) use ($word) {
-                $query->orWhere('specialization', 'like', '%' . $word . '%')
-                    ->orWhere('name', 'like', '%' . $word . '%')
-                    ->orWhere('description', 'like', '%' . $word . '%');
+        $data=request("query")??"";
+        $query = Expert::when($id>=0,fn($query)=>$query
+            ->where('specialty_id', $id))
+            ->where(function ($query) use ($data) {
+                $query->orWhere('specialization', 'like', '%' . $data . '%')
+                    ->orWhere('name', 'like', '%' . $data . '%')
+                    ->orWhere('description', 'like', '%' . $data . '%');
             })
             ->join('users', 'users.id', 'experts.user_id')
             ->select('experts.id', 'user_id', 'name', 'image', 'specialty_id', 'price', 'rateSum', 'rateCount')
