@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\FavoriteController;
 use App\Models\Favorite;
 use App\Models\Reservation;
+use App\Models\Specialty;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -23,7 +24,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
 
-        $specs = SpecialtyController::index();
+        $specs = Specialty::all();
 
         $favs = Favorite::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
