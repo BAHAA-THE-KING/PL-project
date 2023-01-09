@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\FavoriteController;
+use App\Models\Expert;
 use App\Models\Favorite;
 use App\Models\Reservation;
 use App\Models\Specialty;
@@ -193,9 +194,18 @@ class UserController extends Controller
     {
         $connectedUser = auth()->user();
         $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))
+            ->with('expert')
             ->orderBy('created_at')
             ->limit(10)
             ->get();
+
+        foreach($result as $user){
+            $experts=$user->expert;
+            $specialties=$experts->map(fn($expert)=>$expert->specialization);
+            $specialties =array_unique($specialties->toArray());
+            $user->specializations=$specialties;
+            $user->makeHidden(['expert']);
+        }
         return response()->json(
             [
                 "message" => "success",
