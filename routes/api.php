@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialty/{id}', [SpecialtyController::class, 'search']);
     Route::get('specialties', [SpecialtyController::class, 'index']);
-
+    
     Route::post("updateImage", [ImageController::class, "handleImage"]);
 
     Route::get('favorite', [UserController::class, 'getFavoriteList']);
