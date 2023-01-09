@@ -41,7 +41,7 @@ class SpecialtyController extends Controller
     public function search($id)
     {
         $data=request("query")??"";
-        $query = Expert::when($id>=0,fn($query)=>$query
+        $query = Expert::when($id>0,fn($query)=>$query
             ->where('specialty_id', $id))
             ->where(function ($query) use ($data) {
                 $query->orWhere('specialization', 'like', '%' . $data . '%')
