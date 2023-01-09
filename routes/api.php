@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('signup', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
+Route::get("image/{name}", [ImageController::class, "index"]);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [UserController::class, 'logout']);
@@ -47,7 +48,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('specialty/{id}', [SpecialtyController::class, 'search']);
     Route::get('specialties', [SpecialtyController::class, 'index']);
 
-    Route::get("image/{name}", [ImageController::class, "index"]);
     Route::post("updateImage", [ImageController::class, "handleImage"]);
 
     Route::get('favorite', [UserController::class, 'getFavoriteList']);

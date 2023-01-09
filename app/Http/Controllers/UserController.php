@@ -130,7 +130,7 @@ class UserController extends Controller
     public function show($id)
     {
         $connectedUser = auth()->user();
-        if($id<0)$id=$connectedUser->id;
+        if ($id < 0) $id = $connectedUser->id;
         try {
             $json = User::findOrFail($id);
             if ($connectedUser->id == $json['id']) {
@@ -144,12 +144,12 @@ class UserController extends Controller
                     $json->expert->where('active', 1);
             }
 
-            if($json['Expertise']??false){
-                $experts=$json['Expertise'];
-                $experts=$experts->map(function($expert){
-                    $expert->rate=$expert->rateCount==0?0:
-                    number_format($expert->rateSum/$expert->rateCount, 2, '.', '');
-                    $expert->makeHidden(['rateSum','rateCount']);
+            if ($json['Expertise'] ?? false) {
+                $experts = $json['Expertise'];
+                $experts = $experts->map(function ($expert) {
+                    $expert->rate = $expert->rateCount == 0 ? 0 :
+                        number_format($expert->rateSum / $expert->rateCount, 2, '.', '');
+                    $expert->makeHidden(['rateSum', 'rateCount']);
                     return $expert;
                 });
             }
