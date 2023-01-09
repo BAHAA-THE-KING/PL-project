@@ -143,17 +143,33 @@ class UserController extends Controller
                 $json['Expertise'] = $json['canEdit'] ? $json->expert :
                     $json->expert->where('active', 1);
             }
-
+            
             if ($json['Expertise'] ?? false) {
                 $experts = $json['Expertise'];
                 $experts = $experts->map(function ($expert) {
                     $expert->rate = $expert->rateCount == 0 ? 0 :
-                        number_format($expert->rateSum / $expert->rateCount, 2, '.', '');
+                    number_format($expert->rateSum / $expert->rateCount, 2, '.', '');
                     $expert->makeHidden(['rateSum', 'rateCount']);
                     return $expert;
                 });
             }
+            
+            //get total Expert rating for all expertise
+            if($json['isExp']){
+                $totalSum=0;
+                $totalCount=0;
+                foreach($json['Expertise'] as $expert){
+                    if($expert->active == 0)
+                        continue;
+                    $totalSum += $expert->rateSum;
+                    $totalCount += $expert->rateCount;
+                }
 
+                $json['Total ratings'] = $totalCount == 0 ? 0 :
+                number_format($totalSum / $totalCount, 2, '.', '');
+            }
+
+            //response
             $json->makeHidden(['expert']);
             return response()->json(
                 [
