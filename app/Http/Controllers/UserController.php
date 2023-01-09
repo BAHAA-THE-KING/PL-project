@@ -137,13 +137,23 @@ class UserController extends Controller
                 $json->makeVisible(['phone', 'money']);
             }
             $json['isExp'] = $json->expert->where('active', 1)->first() != null;
-            $json['msg'] = 'success';
             $json['canEdit'] = $connectedUser->id == $id;
             $json['isFav'] = $json['canEdit'] ? false : FavoriteController::doesUserLike($connectedUser->id, $id);
             if ($json['isExp'] || $json['canEdit']) {
                 $json['Expertise'] = $json['canEdit'] ? $json->expert :
                     $json->expert->where('active', 1);
             }
+
+            if($json['Expertise']??false){
+                $experts=$json['Expertise'];
+                $experts=$experts->map(function($expert){
+                    $expert->rate=$expert->rateCount==0?0:
+                    number_format($expert->rateSum/$expert->rateCount, 2, '.', '');
+                    $expert->makeHidden(['rateSum','rateCount']);
+                    return $expert;
+                });
+            }
+
             $json->makeHidden(['expert']);
             return response()->json(
                 [
@@ -168,7 +178,8 @@ class UserController extends Controller
         $connectedUser = auth()->user();
         $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))
             ->orderBy('created_at')
-            ->paginate(10);
+            ->limit(10)
+            ->get();
         return response()->json(
             [
                 "message" => "success",
