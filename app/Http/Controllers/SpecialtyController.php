@@ -62,7 +62,7 @@ class SpecialtyController extends Controller
         return $query->count() ? response()->json(
             [
                 "message" => "success",
-                "data" => $query
+                "data" => array_values($query->toArray())
             ],
             200
         )

@@ -194,7 +194,7 @@ class UserController extends Controller
         }
     }
 
-    public static function getFavoriteList()
+    public function getFavoriteList()
     {
         $connectedUser = auth()->user();
         $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))
