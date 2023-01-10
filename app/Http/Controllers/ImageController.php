@@ -11,7 +11,13 @@ class ImageController extends Controller
         try {
             return response()->file(public_path('..\\storage\\app\\images\\' . $name));
         } catch (Exception $e) {
-            dd($e);
+            return response()->json(
+                [
+                    "message" => "error",
+                    "userMessage" => "Image Not Found"
+                ],
+                404
+            );
         }
     }
     public function handleImage()
