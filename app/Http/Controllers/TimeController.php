@@ -206,7 +206,7 @@ class TimeController extends Controller
         try {
             request()->validate([
                 "times" => ["required", "array", "min:1", "max:7"],
-                "times.*.day" => ["required", "distinct", Rule::in(["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"])],
+                "times.*.day" => ["required", "distinct", Rule::in(["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"])],
                 "times.*.start" => ["required", "date_format:H:i", "between:0,23"],
                 "times.*.end" => ["required", "date_format:H:i", "after:start", "between:0,23"]
             ]);
@@ -223,7 +223,7 @@ class TimeController extends Controller
         $user_id = $connectedUser->id;
         $idays = request()->times; //i=input
         $cdays = Time::where("expert_id", $user_id)->get(); //c=current
-        $odays = ["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"];
+        $odays = ["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"];
 
         foreach ($odays as $key => $day) {
             $ctime = $cdays->where("day", $day)->first();
