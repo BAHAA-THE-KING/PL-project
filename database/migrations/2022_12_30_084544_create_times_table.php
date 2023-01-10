@@ -19,8 +19,8 @@ return new class extends Migration
             $table->id("id")->unique();
             $table->unsignedBigInteger("expert_id");
             $table->foreign("expert_id")->references("user_id")->on("experts")->constrained()
-            ->cascadeOnDelete()
-            ->cascadeOnUpdate();
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string("day");
             $table->time("start");
             $table->time("end");

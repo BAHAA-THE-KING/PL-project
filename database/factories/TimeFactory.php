@@ -22,7 +22,7 @@ class TimeFactory extends Factory
         $ids = Expert::pluck("user_id");
         return [
             "expert_id" => fake()->randomElement($ids),
-            "day" => fake()->randomElement(["SAT", "SUN", "MON", "TUE", "WED", "THI", "FRI"]),
+            "day" => fake()->randomElement(["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]),
             "start" => fake()->time("H:i", $end),
             "end" => $end
         ];
