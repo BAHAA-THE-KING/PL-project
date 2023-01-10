@@ -33,7 +33,8 @@ class ImageController extends Controller
         }
         return response()->json(
             [
-                "message" => "success"
+                "message" => "success",
+                "data" => $user->image
             ],
             200
         );
