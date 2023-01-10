@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign("expert_id")->references("user_id")->on("experts")->constrained()
             ->cascadeOnDelete()
             ->cascadeOnUpdate();
-            $table->string("day", 3);
+            $table->string("day");
             $table->time("start");
             $table->time("end");
             $table->timestamps();
