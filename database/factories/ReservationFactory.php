@@ -18,11 +18,13 @@ class ReservationFactory extends Factory
      */
     public function definition()
     {
-        $endTime = fake()->dateTime();
+        $users_ids = User::pluck('id');
+        $experts_ids = Expert::pluck('user_id');
+        $endTime = fake()->dateTimeThisMonth();
         return [
-            "user_id" => User::factory(),
-            "expert_id" => Expert::factory(),
-            "startTime" => fake()->dateTime($endTime),
+            "user_id" => fake()->randomElement($users_ids),
+            "expert_id" => fake()->randomElement($experts_ids),
+            "startTime" => fake()->dateTimeThisMonth($endTime),
             "endTime" => $endTime,
             "rate"=>fake()->randomElement([-1,0,1,2,3,4,5])
         ];

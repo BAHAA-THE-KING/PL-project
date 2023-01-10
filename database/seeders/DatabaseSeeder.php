@@ -29,13 +29,13 @@ class DatabaseSeeder extends Seeder
         // DB::table('users')->delete();
         // DB::table('experts')->delete();
 
-        User::factory(2)->create();
+        User::factory(24)->create();
         $specs=['medical', 'professional', 'adminstrative', 'domestic', 'psychological'];
         foreach ($specs as $spec) {
-            Specialty::factory()->create(["specialtyName"=>$spec]);
+            Specialty::create(["specialtyName"=>$spec]);
         }
-        Expert::factory(5)->create();
-        Favorite::factory(10)->create();
+        Expert::factory(10)->create();
+        Favorite::factory(15)->create();
         Reservation::factory(15)->create();
         Time::factory(15)->create();
     }

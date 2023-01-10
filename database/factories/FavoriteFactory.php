@@ -18,9 +18,11 @@ class FavoriteFactory extends Factory
      */
     public function definition()
     {
+        $users_ids = User::pluck('id');
+        $experts_ids = Expert::pluck('user_id');
         return [
-            "user_id" => User::factory(),
-            "expert_id" => User::factory()
+            "user_id" => fake()->randomElement($users_ids),
+            "expert_id" => fake()->randomElement($experts_ids)
         ];
     }
 }

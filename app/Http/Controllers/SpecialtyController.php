@@ -58,6 +58,7 @@ class SpecialtyController extends Controller
             $t['rating'] = $t['rateCount'] ? round($t['rateSum'] / $t['rateCount'], 1) : 'no ratings yet';
         }
 
+        $query = $query->sortByDesc('rating');
         return $query->count() ? response()->json(
             [
                 "message" => "success",

@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('expert', [ExpertController::class, 'create']);
     Route::patch('expert/{id}', [ExpertController::class, 'update']);
     Route::patch('expert/toggle/{id}', [ExpertController::class, 'toggleActive']);
+    Route::get('top', [ExpertController::class, 'getTop20']);
 
     Route::post('specialty', [SpecialtyController::class, 'create']);
     Route::get('specialty/{id}', [SpecialtyController::class, 'search']);
@@ -52,7 +53,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('favorite', [UserController::class, 'getFavoriteList']);
     Route::post("favorite", [FavoriteController::class, "toggleFavorite"]);
-    Route::delete("favorite", [FavoriteController::class, "destroy"]);
 
     Route::get('time/{id}', [TimeController::class, 'index']);
     Route::post('time', [TimeController::class, 'create']);
