@@ -13,6 +13,7 @@ use App\Models\Reservation;
 use App\Models\Specialty;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -27,8 +28,11 @@ class UserController extends Controller
 
         $specs = Specialty::all();
 
-        $favs = Favorite::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
-
+       $favs = Favorite::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
+        // Response $favs = self::getFavoriteList();
+        // echo($favs);
+        // $favs=json_decode($favs,true);
+        // $favs=$favs['data'];
         $res = Reservation::where("user_id", $user["id"])->take(10)->orderBy("id", "desc")->get();
 
         return response()->json(
@@ -190,7 +194,7 @@ class UserController extends Controller
         }
     }
 
-    public function getFavoriteList()
+    public static function getFavoriteList()
     {
         $connectedUser = auth()->user();
         $result = User::whereHas('lovedExperts', fn ($query) => $query->where('user_id', $connectedUser->id))

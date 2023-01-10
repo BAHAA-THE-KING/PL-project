@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
+use function PHPSTORM_META\map;
+
 class ExpertController extends Controller
 {
     public function index($id)
@@ -174,5 +176,21 @@ class ExpertController extends Controller
             ],
             200
         );
+    }
+
+    public function getTop20()
+    {
+        $experts = Expert::get();
+        $experts = $experts->map(function($expert){
+            $expert->rate = $expert->rateCount == 0 ? 0 :
+            number_format($expert->rateSum / $expert->rateCount, 2, '.', '');
+            $expert->name = User::find($expert->user_id)->first()->name;
+            $expert->specialtyName = Specialty::find($expert->specialty_id)->specialtyName;
+            return $expert;
+        });
+        $experts = $experts->where('rate','<=',6);
+        $experts = $experts->sortByDesc('rate');
+        
+        return response()->json($experts);
     }
 }
