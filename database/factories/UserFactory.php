@@ -19,9 +19,9 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->userName(25),
-            'phone' => fake()->unique()->phoneNumber(),
+            'phone' => fake()->unique()->e164PhoneNumber(),
             'money' => fake()->numberBetween(0, 10000),
-            'image' => fake()->sentence(1, 2),
+            'image' => 'none',
             'password' => bcrypt(fake()->sentence(1, 2)), // password
             'remember_token' => Str::random(10),
         ];
