@@ -59,7 +59,8 @@ class ReservationController extends Controller
             request()->validate([
                 "expert_id" => ["required", Rule::exists("Experts", "id")],
                 "startTime" => ["required", "date_format:Y-m-d H:i:s"],
-                "endTime" => ["required", "date_format:Y-m-d H:i:s", "after:startTime"]
+                "endTime" => ["required", "date_format:Y-m-d H:i:s", 
+                "after:startTime"]
             ]);
         } catch (Exception $e) {
             return response()->json(
@@ -99,7 +100,8 @@ class ReservationController extends Controller
 
         /*<From Time Controller>*/
 
-        $id = request()->id;
+        $expert=Expert::where('id',$expert_id)->with('user')->first();
+        $id = $expert->user->id;
         $day = request()->day;
         $reservations = Reservation::where(
             function ($q) use ($day) {
@@ -125,9 +127,13 @@ class ReservationController extends Controller
         })
             ->orderBy("startTime", "asc")
             ->get()->toArray();
-        /**/
-        $time = Time::where("expert_id", $user["id"])->where("day", Carbon::createFromFormat("d/m/Y", $day)->format("l"))->first();
-
+        
+            /**/
+            $time = Time::where("expert_id", $expert->user->id)->where("day", 
+            Carbon::createFromFormat("d/m/Y", $day)->format("l")
+            )->first();
+            
+            
         if ($time == null)
             return response()->json(
                 [
